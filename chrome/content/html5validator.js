@@ -1,5 +1,8 @@
 var html5validator = function()
 {
+	var filterStrings = ["tag seen", "Stray end tag", "Bad start tag", "violates nesting rules", "Duplicate ID", "first occurrence of ID", "Unclosed element", "not allowed as child of element", "unclosed elements", "unquoted attribute value", "Duplicate attribute"];
+	var filterRE = filterStrings.join("|");
+
 	var preferences = {},
 		loadPreferences = function()
 		{
@@ -21,7 +24,9 @@ var html5validator = function()
 				useTrigger: prefBranch.getBoolPref("useTrigger"),
 				debug: prefBranch.getBoolPref("debug"),
 				ignoreXHTMLErrors: prefBranch.getBoolPref("ignoreXHTMLErrors"),
-				allowAccessibilityFeatures: prefBranch.getBoolPref("allowAccessibilityFeatures")
+				allowAccessibilityFeatures: prefBranch.getBoolPref("allowAccessibilityFeatures"),
+				onlyWCAG411: prefBranch.getBoolPref("onlyWCAG411")
+				
 			};
 		},
 		// observe preferences changes
@@ -302,8 +307,14 @@ var html5validator = function()
 					statusBarPanel.tooltipText = "HTML5 Validator: Could not contact the validator";
 					break;
 				case "results":
-					statusBarPanel.src = "chrome://html5validator/skin/html5-ok.png";
-					statusBarPanel.tooltipText = "HTML5 Validator: No errors";
+				        if (preferences.onlyWCAG411) {
+						statusBarPanel.src = "chrome://html5validator/skin/wcag2411-ok.png";
+						statusBarPanel.tooltipText = "WCAG 2.0 SC 4.1.1: No errors";				        
+				        }
+				        else {
+						statusBarPanel.src = "chrome://html5validator/skin/html5-ok.png";
+						statusBarPanel.tooltipText = "HTML5 Validator: No errors";
+				        }
 					break;
 			}
 		}
@@ -345,7 +356,12 @@ var html5validator = function()
 									continue;
 								}
 							}
+							if (preferences.onlyWCAG411) {
+							    if (response.messages[i].message.match(filterRE) == null)
+								 continue;
+							    }
 							errors++;
+							
 						} else if (response.messages[i].subType == "warning") {
 							if (preferences.allowAccessibilityFeatures) {
 								// Do not count warnings caused by removed accessibility features.
@@ -354,6 +370,9 @@ var html5validator = function()
 								if (message.message.match(/The “summary” attribute is obsolete/i)) {
 									continue;
 								}
+							}
+							if (preferences.onlyWCAG411) {
+								continue;
 							}
 							warnings++;
 						}
@@ -461,6 +480,11 @@ var html5validator = function()
 					continue;
 				}
 			}
+			if (preferences.onlyWCAG411) {
+				if (message['message'].match(filterRE) == null)
+					 continue;
+			}
+			
 			li = errorList.appendChild(generatedDocument.createElement('li'));
 			li.className = message['type'] + (message['subType'] ? ' ' + message['subType'] : '');
 			li.innerHTML = '<p><strong class="type">' + (message['subType'] ? ' ' + message['subType'] : message['type']) + ':</strong> ' + encodeHTML(message['message']) + '</p>';

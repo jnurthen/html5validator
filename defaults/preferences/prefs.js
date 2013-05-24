@@ -4,3 +4,4 @@ pref("extensions.html5validator.useTrigger", false);
 pref("extensions.html5validator.debug", false);
 pref("extensions.html5validator.ignoreXHTMLErrors", false);
 pref("extensions.html5validator.allowAccessibilityFeatures", false);
+pref("extensions.html5validator.onlyWCAG411", false);

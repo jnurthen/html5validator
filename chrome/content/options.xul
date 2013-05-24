@@ -15,6 +15,7 @@
 			<preference id="pref-useTrigger" name="extensions.html5validator.useTrigger" type="bool"/>
 			<preference id="pref-ignoreXHTMLErrors" name="extensions.html5validator.ignoreXHTMLErrors" type="bool"/>
 			<preference id="pref-allowAccessibilityFeatures" name="extensions.html5validator.allowAccessibilityFeatures" type="bool"/>
+			<preference id="pref-onlyWCAG411" name="extensions.html5validator.onlyWCAG411" type="bool"/>
 		</preferences>
 		
 		<groupbox>
@@ -57,6 +58,11 @@
 			<checkbox label="Ignore XHTML errors" id="ignoreXHTMLErrors" preference="pref-ignoreXHTMLErrors"/>
 			<checkbox label="Allow HTML 4.01 accessibility features (summary, abbr, longdesc, scope)" id="allowAccessibilityFeatures" preference="pref-allowAccessibilityFeatures"/>
 		</groupbox>
+		
+		<groupbox>
+			<caption label="WCAG 2.0 4.1.1"/>
+			<checkbox label="Only Validate Minimum Requirements for WCAG 2.0 4.1.1" id="onlyWCAG411" preference="pref-onlyWCAG411"/>
+		</groupbox>		
 		
 	</prefpane>
  
